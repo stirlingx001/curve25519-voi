@@ -72,12 +72,12 @@ func edwardsDoubleScalarMulBasepointVartimeGenericInner(out *EdwardsPoint, a *sc
 
 	tableB := &constAFFINE_ODD_MULTIPLES_OF_BASEPOINT
 
-	var r projectivePoint
+	var r ProjectivePoint
 	r.Identity()
 
 	var (
 		tEp EdwardsPoint
-		t   completedPoint
+		t   CompletedPoint
 	)
 	for {
 		t.Double(&r)

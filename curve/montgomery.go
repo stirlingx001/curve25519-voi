@@ -77,8 +77,8 @@ func (p *MontgomeryPoint) SetEdwards(edwardsPoint *EdwardsPoint) *MontgomeryPoin
 	// the Edwards curve.  Since 0.invert() = 0, in this case we
 	// compute the 2-torsion point (0,0).
 	var U, W, u field.Element
-	U.Add(&edwardsPoint.inner.Z, &edwardsPoint.inner.Y)
-	W.Sub(&edwardsPoint.inner.Z, &edwardsPoint.inner.Y)
+	U.Add(&edwardsPoint.Inner.Z, &edwardsPoint.Inner.Y)
+	W.Sub(&edwardsPoint.Inner.Z, &edwardsPoint.Inner.Y)
 	W.Invert(&W)
 	u.Mul(&U, &W)
 

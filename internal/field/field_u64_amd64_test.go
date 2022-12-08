@@ -116,11 +116,11 @@ func isInAsmBounds(x *Element) bool {
 		l14Max = 1<<51 + 8191
 	)
 
-	return x.inner[0] < l0Max &&
-		x.inner[1] < l14Max &&
-		x.inner[2] < l14Max &&
-		x.inner[3] < l14Max &&
-		x.inner[4] < l14Max
+	return x.Inner[0] < l0Max &&
+		x.Inner[1] < l14Max &&
+		x.Inner[2] < l14Max &&
+		x.Inner[3] < l14Max &&
+		x.Inner[4] < l14Max
 }
 
 func TestFeMulAsm(t *testing.T) {

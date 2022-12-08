@@ -224,7 +224,7 @@ func testFieldElementComponents() (x0, x1, x2, x3 *field.Element) {
 	var p EdwardsPoint
 	_, _ = p.SetCompressedY(compressedY)
 
-	return &p.inner.X, &p.inner.Y, &p.inner.Z, &p.inner.T
+	return &p.Inner.X, &p.Inner.Y, &p.Inner.Z, &p.Inner.T
 }
 
 func testFieldElement2625x4() fieldElement2625x4 {

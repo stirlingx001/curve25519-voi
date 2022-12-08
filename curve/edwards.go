@@ -109,9 +109,9 @@ func (p *CompressedEdwardsY) SetBytes(in []byte) (*CompressedEdwardsY, error) {
 // SetEdwardsPoint compresses an Edwards point.
 func (p *CompressedEdwardsY) SetEdwardsPoint(point *EdwardsPoint) *CompressedEdwardsY {
 	var x, y, recip field.Element
-	recip.Invert(&point.inner.Z)
-	x.Mul(&point.inner.X, &recip)
-	y.Mul(&point.inner.Y, &recip)
+	recip.Invert(&point.Inner.Z)
+	x.Mul(&point.Inner.X, &recip)
+	y.Mul(&point.Inner.Y, &recip)
 
 	_ = y.ToBytes(p[:])
 	p[31] ^= byte(x.IsNegative()) << 7
@@ -189,7 +189,7 @@ func NewCompressedEdwardsYFromBytes(in []byte) (*CompressedEdwardsY, error) {
 //
 // The default value is NOT valid and MUST only be used as a receiver.
 type EdwardsPoint struct {
-	inner edwardsPointInner
+	Inner edwardsPointInner
 }
 
 type edwardsPointInner struct {
@@ -226,19 +226,19 @@ func (p *EdwardsPoint) UnmarshalBinary(data []byte) error {
 
 // Identity sets the Edwards point to the identity element.
 func (p *EdwardsPoint) Identity() *EdwardsPoint {
-	p.inner.X.Zero()
-	p.inner.Y.One()
-	p.inner.Z.One()
-	p.inner.T.Zero()
+	p.Inner.X.Zero()
+	p.Inner.Y.One()
+	p.Inner.Z.One()
+	p.Inner.T.Zero()
 	return p
 }
 
 // Set sets `p = t`, and returns p.
 func (p *EdwardsPoint) Set(t *EdwardsPoint) *EdwardsPoint {
-	p.inner.X.Set(&t.inner.X)
-	p.inner.Y.Set(&t.inner.Y)
-	p.inner.Z.Set(&t.inner.Z)
-	p.inner.T.Set(&t.inner.T)
+	p.Inner.X.Set(&t.Inner.X)
+	p.Inner.Y.Set(&t.Inner.Y)
+	p.Inner.Z.Set(&t.Inner.Z)
+	p.Inner.T.Set(&t.Inner.T)
 	return p
 }
 
@@ -272,10 +272,10 @@ func (p *EdwardsPoint) SetCompressedY(compressedY *CompressedEdwardsY) (*Edwards
 	compressedSignBit := int(compressedY[31] >> 7)
 	X.ConditionalNegate(compressedSignBit)
 
-	p.inner.X.Set(&X)
-	p.inner.Y.Set(&Y)
-	p.inner.Z.Set(&Z)
-	p.inner.T.Mul(&X, &Y)
+	p.Inner.X.Set(&X)
+	p.Inner.Y.Set(&Y)
+	p.Inner.Z.Set(&Z)
+	p.Inner.T.Mul(&X, &Y)
 
 	return p, nil
 }
@@ -283,10 +283,10 @@ func (p *EdwardsPoint) SetCompressedY(compressedY *CompressedEdwardsY) (*Edwards
 // ConditionalSelect sets the point to a iff choice == 0 and b iff
 // choice == 1.
 func (p *EdwardsPoint) ConditionalSelect(a, b *EdwardsPoint, choice int) {
-	p.inner.X.ConditionalSelect(&a.inner.X, &b.inner.X, choice)
-	p.inner.Y.ConditionalSelect(&a.inner.Y, &b.inner.Y, choice)
-	p.inner.Z.ConditionalSelect(&a.inner.Z, &b.inner.Z, choice)
-	p.inner.T.ConditionalSelect(&a.inner.T, &b.inner.T, choice)
+	p.Inner.X.ConditionalSelect(&a.Inner.X, &b.Inner.X, choice)
+	p.Inner.Y.ConditionalSelect(&a.Inner.Y, &b.Inner.Y, choice)
+	p.Inner.Z.ConditionalSelect(&a.Inner.Z, &b.Inner.Z, choice)
+	p.Inner.T.ConditionalSelect(&a.Inner.T, &b.Inner.T, choice)
 }
 
 // Equal returns 1 iff the points are equal, 0 otherwise. This function
@@ -302,10 +302,10 @@ func (p *EdwardsPoint) Equal(other *EdwardsPoint) int {
 	// We have that X = xZ and X' = x'Z'. Thus, x = x' is equivalent to
 	// (xZ)Z' = (x'Z')Z, and similarly for the y-coordinate.
 	var sXoZ, oXsZ, sYoZ, oYsZ field.Element
-	sXoZ.Mul(&p.inner.X, &other.inner.Z)
-	oXsZ.Mul(&other.inner.X, &p.inner.Z)
-	sYoZ.Mul(&p.inner.Y, &other.inner.Z)
-	oYsZ.Mul(&other.inner.Y, &p.inner.Z)
+	sXoZ.Mul(&p.Inner.X, &other.Inner.Z)
+	oXsZ.Mul(&other.Inner.X, &p.Inner.Z)
+	sYoZ.Mul(&p.Inner.Y, &other.Inner.Z)
+	oYsZ.Mul(&other.Inner.Y, &p.Inner.Z)
 
 	return sXoZ.Equal(&oXsZ) & sYoZ.Equal(&oYsZ)
 }
@@ -313,8 +313,8 @@ func (p *EdwardsPoint) Equal(other *EdwardsPoint) int {
 // Add sets `p = a + b`, and returns p.
 func (p *EdwardsPoint) Add(a, b *EdwardsPoint) *EdwardsPoint {
 	var (
-		bPNiels projectiveNielsPoint
-		sum     completedPoint
+		bPNiels ProjectiveNielsPoint
+		sum     CompletedPoint
 	)
 	return p.setCompleted(sum.AddEdwardsProjectiveNiels(a, bPNiels.SetEdwards(b)))
 }
@@ -322,8 +322,8 @@ func (p *EdwardsPoint) Add(a, b *EdwardsPoint) *EdwardsPoint {
 // Sub sets `p = a - b`, and returns p.
 func (p *EdwardsPoint) Sub(a, b *EdwardsPoint) *EdwardsPoint {
 	var (
-		bPNiels projectiveNielsPoint
-		diff    completedPoint
+		bPNiels ProjectiveNielsPoint
+		diff    CompletedPoint
 	)
 	return p.setCompleted(diff.SubEdwardsProjectiveNiels(a, bPNiels.SetEdwards(b)))
 }
@@ -340,10 +340,10 @@ func (p *EdwardsPoint) Sum(values []*EdwardsPoint) *EdwardsPoint {
 
 // Neg sets `p = -t`, and returns p.
 func (p *EdwardsPoint) Neg(t *EdwardsPoint) *EdwardsPoint {
-	p.inner.X.Neg(&t.inner.X)
-	p.inner.Y.Set(&t.inner.Y)
-	p.inner.Z.Set(&t.inner.Z)
-	p.inner.T.Neg(&t.inner.T)
+	p.Inner.X.Neg(&t.Inner.X)
+	p.Inner.Y.Set(&t.Inner.Y)
+	p.Inner.Z.Set(&t.Inner.Z)
+	p.Inner.T.Neg(&t.Inner.T)
 	return p
 }
 
@@ -429,8 +429,8 @@ func (p *EdwardsPoint) IsIdentity() bool {
 // double sets `p = 2t`, and returns p.
 func (p *EdwardsPoint) double(t *EdwardsPoint) *EdwardsPoint {
 	var (
-		pProjective projectivePoint
-		sum         completedPoint
+		pProjective ProjectivePoint
+		sum         CompletedPoint
 	)
 	return p.setCompleted(sum.Double(pProjective.SetEdwards(t)))
 }
@@ -442,8 +442,8 @@ func (p *EdwardsPoint) mulByPow2(t *EdwardsPoint, k uint) *EdwardsPoint {
 	}
 
 	var (
-		r completedPoint
-		s projectivePoint
+		r CompletedPoint
+		s ProjectivePoint
 	)
 	s.SetEdwards(t)
 	for i := uint(0); i < k-1; i++ {

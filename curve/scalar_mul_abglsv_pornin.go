@@ -164,12 +164,12 @@ func edwardsMulAbglsvPorninVartimeGenericInner(out *EdwardsPoint, d0IsNeg bool, 
 	tableB := &constAFFINE_ODD_MULTIPLES_OF_BASEPOINT
 	tableB_SHL_128 := &constAFFINE_ODD_MULTIPLES_OF_B_SHL_128
 
-	var r projectivePoint
+	var r ProjectivePoint
 	r.Identity()
 
 	var (
 		tEp EdwardsPoint
-		t   completedPoint
+		t   CompletedPoint
 	)
 	for {
 		t.Double(&r)

@@ -74,7 +74,7 @@ func edwardsMultiscalarMulStrausGeneric(out *EdwardsPoint, scalars []*scalar.Sca
 
 	out.Identity()
 
-	var sum completedPoint
+	var sum CompletedPoint
 	for i := 63; i >= 0; i-- {
 		out.mulByPow2(out, 4)
 		for j := 0; j < len(points); j++ {
@@ -99,12 +99,12 @@ func edwardsMultiscalarMulStrausVartimeGeneric(out *EdwardsPoint, scalars []*sca
 		nafs = append(nafs, scalar.NonAdjacentForm(5))
 	}
 
-	var r projectivePoint
+	var r ProjectivePoint
 	r.Identity()
 
 	var (
 		tEp EdwardsPoint
-		t   completedPoint
+		t   CompletedPoint
 	)
 	for i := 255; i >= 0; i-- {
 		t.Double(&r)
@@ -154,12 +154,12 @@ func expandedEdwardsMultiscalarMulStrausVartimeGeneric(out *EdwardsPoint, static
 		}
 	}
 
-	var r projectivePoint
+	var r ProjectivePoint
 	r.Identity()
 
 	var (
 		tEp EdwardsPoint
-		t   completedPoint
+		t   CompletedPoint
 	)
 	for i := 255; i >= 0; i-- {
 		t.Double(&r)

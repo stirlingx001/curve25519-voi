@@ -53,16 +53,16 @@ const (
 // Element represents an element of the field Z/(2^255 - 19).
 type Element struct {
 	disalloweq.DisallowEqual //nolint:unused
-	inner                    [5]uint64
+	Inner                    [5]uint64
 }
 
 // Add sets `fe = a + b`, and returns fe.
 func (fe *Element) Add(a, b *Element) *Element {
-	fe.inner[0] = a.inner[0] + b.inner[0]
-	fe.inner[1] = a.inner[1] + b.inner[1]
-	fe.inner[2] = a.inner[2] + b.inner[2]
-	fe.inner[3] = a.inner[3] + b.inner[3]
-	fe.inner[4] = a.inner[4] + b.inner[4]
+	fe.Inner[0] = a.Inner[0] + b.Inner[0]
+	fe.Inner[1] = a.Inner[1] + b.Inner[1]
+	fe.Inner[2] = a.Inner[2] + b.Inner[2]
+	fe.Inner[3] = a.Inner[3] + b.Inner[3]
+	fe.Inner[4] = a.Inner[4] + b.Inner[4]
 	return fe
 }
 
@@ -76,11 +76,11 @@ func (fe *Element) Sub(a, b *Element) *Element {
 	// just bigger than b and avoid having to do a reduction.
 
 	return fe.reduce(&[5]uint64{
-		(a.inner[0] + p_times_sixteen_0) - b.inner[0],
-		(a.inner[1] + p_times_sixteen_1234) - b.inner[1],
-		(a.inner[2] + p_times_sixteen_1234) - b.inner[2],
-		(a.inner[3] + p_times_sixteen_1234) - b.inner[3],
-		(a.inner[4] + p_times_sixteen_1234) - b.inner[4],
+		(a.Inner[0] + p_times_sixteen_0) - b.Inner[0],
+		(a.Inner[1] + p_times_sixteen_1234) - b.Inner[1],
+		(a.Inner[2] + p_times_sixteen_1234) - b.Inner[2],
+		(a.Inner[3] + p_times_sixteen_1234) - b.Inner[3],
+		(a.Inner[4] + p_times_sixteen_1234) - b.Inner[4],
 	})
 }
 
@@ -91,8 +91,8 @@ func (fe *Element) Mul(a, b *Element) *Element {
 }
 
 func feMulGeneric(fe, a, b *Element) { //nolint:unused,deadcode
-	a0, a1, a2, a3, a4 := a.inner[0], a.inner[1], a.inner[2], a.inner[3], a.inner[4]
-	b0, b1, b2, b3, b4 := b.inner[0], b.inner[1], b.inner[2], b.inner[3], b.inner[4]
+	a0, a1, a2, a3, a4 := a.Inner[0], a.Inner[1], a.Inner[2], a.Inner[3], a.Inner[4]
+	b0, b1, b2, b3, b4 := b.Inner[0], b.Inner[1], b.Inner[2], b.Inner[3], b.Inner[4]
 
 	// Precondition: assume input limbs a[i], b[i] are bounded as
 	//
@@ -211,15 +211,15 @@ func feMulGeneric(fe, a, b *Element) { //nolint:unused,deadcode
 	tmp = (c2_hi << (64 - 51)) | (c2_lo >> 51)
 	c3_lo, carry = bits.Add64(c3_lo, tmp, 0)
 	c3_hi, _ = bits.Add64(c3_hi, 0, carry)
-	fe.inner[2] = c2_lo & low_51_bit_mask
+	fe.Inner[2] = c2_lo & low_51_bit_mask
 
 	tmp = (c3_hi << (64 - 51)) | (c3_lo >> 51)
 	c4_lo, carry = bits.Add64(c4_lo, tmp, 0)
 	c4_hi, _ = bits.Add64(c4_hi, 0, carry)
-	fe.inner[3] = c3_lo & low_51_bit_mask
+	fe.Inner[3] = c3_lo & low_51_bit_mask
 
 	carry = (c4_hi << (64 - 51)) | (c4_lo >> 51)
-	fe.inner[4] = c4_lo & low_51_bit_mask
+	fe.Inner[4] = c4_lo & low_51_bit_mask
 
 	// To see that this does not overflow, we need fe[0] + carry * 19 < 2^64.
 	//
@@ -239,15 +239,15 @@ func feMulGeneric(fe, a, b *Element) { //nolint:unused,deadcode
 	fe0 = fe0 + carry*19
 
 	// Now fe[1] < 2^51 + 2^(64 -51) = 2^51 + 2^13 < 2^(51 + epsilon).
-	fe.inner[1] = fe1 + (fe0 >> 51)
-	fe.inner[0] = fe0 & low_51_bit_mask
+	fe.Inner[1] = fe1 + (fe0 >> 51)
+	fe.Inner[0] = fe0 & low_51_bit_mask
 
 	// Now fe[i] < 2^(51 + epsilon) for all i.
 }
 
 // Mul121666 sets `fe = t * 121666`, and returns fe.
 func (fe *Element) Mul121666(t *Element) *Element {
-	a0, a1, a2, a3, a4 := t.inner[0], t.inner[1], t.inner[2], t.inner[3], t.inner[4]
+	a0, a1, a2, a3, a4 := t.Inner[0], t.Inner[1], t.Inner[2], t.Inner[3], t.Inner[4]
 	b0 := uint64(121666)
 
 	// Multiply to get 128-bit coefficients of output
@@ -276,20 +276,20 @@ func (fe *Element) Mul121666(t *Element) *Element {
 	tmp = (c2_hi << (64 - 51)) | (c2_lo >> 51)
 	c3_lo, carry = bits.Add64(c3_lo, tmp, 0)
 	c3_hi, _ = bits.Add64(c3_hi, 0, carry)
-	fe.inner[2] = c2_lo & low_51_bit_mask
+	fe.Inner[2] = c2_lo & low_51_bit_mask
 
 	tmp = (c3_hi << (64 - 51)) | (c3_lo >> 51)
 	c4_lo, carry = bits.Add64(c4_lo, tmp, 0)
 	c4_hi, _ = bits.Add64(c4_hi, 0, carry)
-	fe.inner[3] = c3_lo & low_51_bit_mask
+	fe.Inner[3] = c3_lo & low_51_bit_mask
 
 	carry = (c4_hi << (64 - 51)) | (c4_lo >> 51)
-	fe.inner[4] = c4_lo & low_51_bit_mask
+	fe.Inner[4] = c4_lo & low_51_bit_mask
 
 	fe0 = fe0 + carry*19
 
-	fe.inner[1] = fe1 + (fe0 >> 51)
-	fe.inner[0] = fe0 & low_51_bit_mask
+	fe.Inner[1] = fe1 + (fe0 >> 51)
+	fe.Inner[0] = fe0 & low_51_bit_mask
 
 	return fe
 }
@@ -298,40 +298,40 @@ func (fe *Element) Mul121666(t *Element) *Element {
 func (fe *Element) Neg(t *Element) *Element {
 	// See commentary in the Sub impl.
 	return fe.reduce(&[5]uint64{
-		p_times_sixteen_0 - t.inner[0],
-		p_times_sixteen_1234 - t.inner[1],
-		p_times_sixteen_1234 - t.inner[2],
-		p_times_sixteen_1234 - t.inner[3],
-		p_times_sixteen_1234 - t.inner[4],
+		p_times_sixteen_0 - t.Inner[0],
+		p_times_sixteen_1234 - t.Inner[1],
+		p_times_sixteen_1234 - t.Inner[2],
+		p_times_sixteen_1234 - t.Inner[3],
+		p_times_sixteen_1234 - t.Inner[4],
 	})
 }
 
 // ConditionalSelect sets the field element to a iff choice == 0 and
 // b iff choice == 1.
 func (fe *Element) ConditionalSelect(a, b *Element, choice int) {
-	fe.inner[0] = subtle.ConstantTimeSelectUint64(choice, b.inner[0], a.inner[0])
-	fe.inner[1] = subtle.ConstantTimeSelectUint64(choice, b.inner[1], a.inner[1])
-	fe.inner[2] = subtle.ConstantTimeSelectUint64(choice, b.inner[2], a.inner[2])
-	fe.inner[3] = subtle.ConstantTimeSelectUint64(choice, b.inner[3], a.inner[3])
-	fe.inner[4] = subtle.ConstantTimeSelectUint64(choice, b.inner[4], a.inner[4])
+	fe.Inner[0] = subtle.ConstantTimeSelectUint64(choice, b.Inner[0], a.Inner[0])
+	fe.Inner[1] = subtle.ConstantTimeSelectUint64(choice, b.Inner[1], a.Inner[1])
+	fe.Inner[2] = subtle.ConstantTimeSelectUint64(choice, b.Inner[2], a.Inner[2])
+	fe.Inner[3] = subtle.ConstantTimeSelectUint64(choice, b.Inner[3], a.Inner[3])
+	fe.Inner[4] = subtle.ConstantTimeSelectUint64(choice, b.Inner[4], a.Inner[4])
 }
 
 // ConditionalSwap conditionally swaps the field elements according to choice.
 func (fe *Element) ConditionalSwap(other *Element, choice int) {
-	subtle.ConstantTimeSwapUint64(choice, &other.inner[0], &fe.inner[0])
-	subtle.ConstantTimeSwapUint64(choice, &other.inner[1], &fe.inner[1])
-	subtle.ConstantTimeSwapUint64(choice, &other.inner[2], &fe.inner[2])
-	subtle.ConstantTimeSwapUint64(choice, &other.inner[3], &fe.inner[3])
-	subtle.ConstantTimeSwapUint64(choice, &other.inner[4], &fe.inner[4])
+	subtle.ConstantTimeSwapUint64(choice, &other.Inner[0], &fe.Inner[0])
+	subtle.ConstantTimeSwapUint64(choice, &other.Inner[1], &fe.Inner[1])
+	subtle.ConstantTimeSwapUint64(choice, &other.Inner[2], &fe.Inner[2])
+	subtle.ConstantTimeSwapUint64(choice, &other.Inner[3], &fe.Inner[3])
+	subtle.ConstantTimeSwapUint64(choice, &other.Inner[4], &fe.Inner[4])
 }
 
 // ConditionalAssign conditionally assigns the field element according to choice.
 func (fe *Element) ConditionalAssign(other *Element, choice int) {
-	fe.inner[0] = subtle.ConstantTimeSelectUint64(choice, other.inner[0], fe.inner[0])
-	fe.inner[1] = subtle.ConstantTimeSelectUint64(choice, other.inner[1], fe.inner[1])
-	fe.inner[2] = subtle.ConstantTimeSelectUint64(choice, other.inner[2], fe.inner[2])
-	fe.inner[3] = subtle.ConstantTimeSelectUint64(choice, other.inner[3], fe.inner[3])
-	fe.inner[4] = subtle.ConstantTimeSelectUint64(choice, other.inner[4], fe.inner[4])
+	fe.Inner[0] = subtle.ConstantTimeSelectUint64(choice, other.Inner[0], fe.Inner[0])
+	fe.Inner[1] = subtle.ConstantTimeSelectUint64(choice, other.Inner[1], fe.Inner[1])
+	fe.Inner[2] = subtle.ConstantTimeSelectUint64(choice, other.Inner[2], fe.Inner[2])
+	fe.Inner[3] = subtle.ConstantTimeSelectUint64(choice, other.Inner[3], fe.Inner[3])
+	fe.Inner[4] = subtle.ConstantTimeSelectUint64(choice, other.Inner[4], fe.Inner[4])
 }
 
 // One sets the fe to one, and returns fe.
@@ -374,11 +374,11 @@ func (fe *Element) reduce(limbs *[5]uint64) *Element {
 	l3 &= low_51_bit_mask
 	l4 &= low_51_bit_mask
 
-	fe.inner[0] = l0 + c4*19
-	fe.inner[1] = l1 + c0
-	fe.inner[2] = l2 + c1
-	fe.inner[3] = l3 + c2
-	fe.inner[4] = l4 + c3
+	fe.Inner[0] = l0 + c4*19
+	fe.Inner[1] = l1 + c0
+	fe.Inner[2] = l2 + c1
+	fe.Inner[3] = l3 + c2
+	fe.Inner[4] = l4 + c3
 
 	return fe
 }
@@ -397,7 +397,7 @@ func (fe *Element) SetBytes(in []byte) (*Element, error) {
 
 	_ = in[31]
 	*fe = Element{
-		inner: [5]uint64{
+		Inner: [5]uint64{
 			// load bits [  0, 64), no shift
 			binary.LittleEndian.Uint64(in[0:8]) & low_51_bit_mask,
 			// load bits [ 48,112), shift to [ 51,112)
@@ -430,15 +430,15 @@ func (fe *Element) SetBytesWide(in []byte) (*Element, error) {
 
 	// Handle the 256th and 512th bits (MSB of lo and hi) explicitly
 	// as SetBytes ignores them.
-	lo.inner[0] += uint64(in[31]>>7)*19 + uint64(in[63]>>7)*2*19*19
+	lo.Inner[0] += uint64(in[31]>>7)*19 + uint64(in[63]>>7)*2*19*19
 
-	lo.inner[0] += 2 * 19 * hi.inner[0]
-	lo.inner[1] += 2 * 19 * hi.inner[1]
-	lo.inner[2] += 2 * 19 * hi.inner[2]
-	lo.inner[3] += 2 * 19 * hi.inner[3]
-	lo.inner[4] += 2 * 19 * hi.inner[4]
+	lo.Inner[0] += 2 * 19 * hi.Inner[0]
+	lo.Inner[1] += 2 * 19 * hi.Inner[1]
+	lo.Inner[2] += 2 * 19 * hi.Inner[2]
+	lo.Inner[3] += 2 * 19 * hi.Inner[3]
+	lo.Inner[4] += 2 * 19 * hi.Inner[4]
 
-	fe.reduce(&lo.inner)
+	fe.reduce(&lo.Inner)
 
 	return fe, nil
 }
@@ -466,8 +466,8 @@ func (fe *Element) ToBytes(out []byte) error {
 
 	// First, reduce the limbs to ensure h < 2*p.
 	var reduced Element
-	reduced.reduce(&fe.inner)
-	l0, l1, l2, l3, l4 := reduced.inner[0], reduced.inner[1], reduced.inner[2], reduced.inner[3], reduced.inner[4]
+	reduced.reduce(&fe.Inner)
+	l0, l1, l2, l3, l4 := reduced.Inner[0], reduced.Inner[1], reduced.Inner[2], reduced.Inner[3], reduced.Inner[4]
 
 	q := (l0 + 19) >> 51
 	q = (l1 + q) >> 51
@@ -539,7 +539,7 @@ func (fe *Element) Pow2k(t *Element, k uint) *Element {
 }
 
 func fePow2kGeneric(fe, t *Element, k uint) { //nolint:unused,deadcode
-	a0, a1, a2, a3, a4 := t.inner[0], t.inner[1], t.inner[2], t.inner[3], t.inner[4]
+	a0, a1, a2, a3, a4 := t.Inner[0], t.Inner[1], t.Inner[2], t.Inner[3], t.Inner[4]
 
 	for {
 		// Precondition: assume input limbs a[i] are bounded as
@@ -677,7 +677,7 @@ func fePow2kGeneric(fe, t *Element, k uint) { //nolint:unused,deadcode
 		}
 	}
 
-	fe.inner[0], fe.inner[1], fe.inner[2], fe.inner[3], fe.inner[4] = a0, a1, a2, a3, a4
+	fe.Inner[0], fe.Inner[1], fe.Inner[2], fe.Inner[3], fe.Inner[4] = a0, a1, a2, a3, a4
 }
 
 // Square sets `fe = t^2`, and returns fe.
@@ -690,20 +690,20 @@ func (fe *Element) Square(t *Element) *Element {
 func (fe *Element) Square2(t *Element) *Element {
 	fePow2k(fe, t, 1)
 	for i := 0; i < 5; i++ {
-		fe.inner[i] *= 2
+		fe.Inner[i] *= 2
 	}
 	return fe
 }
 
 // UnsafeInner exposes the inner limbs to allow for the vector implementation.
 func (fe *Element) UnsafeInner() *[5]uint64 {
-	return &fe.inner
+	return &fe.Inner
 }
 
 // NewElement51 constructs a field element from its raw component limbs.
 func NewElement51(l0, l1, l2, l3, l4 uint64) Element {
 	return Element{
-		inner: [5]uint64{
+		Inner: [5]uint64{
 			l0, l1, l2, l3, l4,
 		},
 	}

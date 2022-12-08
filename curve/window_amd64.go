@@ -32,7 +32,7 @@
 package curve
 
 //go:noescape
-func lookupAffineNiels(table *affineNielsPointLookupTable, out *affineNielsPoint, xabs uint8)
+func lookupAffineNiels(table *affineNielsPointLookupTable, out *AffineNielsPoint, xabs uint8)
 
 //go:noescape
 func lookupCached(table *cachedPointLookupTable, out *cachedPoint, xabs uint8)

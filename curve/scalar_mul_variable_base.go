@@ -62,8 +62,8 @@ func edwardsMulGeneric(out, point *EdwardsPoint, scalar *scalar.Scalar) *Edwards
 	// Unwrap first loop iteration to save computing 16*identity
 	var (
 		tmp3 EdwardsPoint
-		tmp2 projectivePoint
-		tmp1 completedPoint
+		tmp2 ProjectivePoint
+		tmp1 CompletedPoint
 	)
 	tmp3.Identity()
 	tmp := lookupTable.Lookup(scalarDigits[63])

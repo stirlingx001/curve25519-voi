@@ -73,8 +73,8 @@ func (fe *Element) Set(t *Element) *Element {
 
 // Zero sets fe to zero, and returns fe.
 func (fe *Element) Zero() *Element {
-	for i := range fe.inner {
-		fe.inner[i] = 0
+	for i := range fe.Inner {
+		fe.Inner[i] = 0
 	}
 	return fe
 }

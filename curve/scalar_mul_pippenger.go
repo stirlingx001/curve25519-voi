@@ -87,7 +87,7 @@ func edwardsMultiscalarMulPippengerVartimeGeneric(out *EdwardsPoint, staticScala
 		}
 	}
 
-	optPoints, off := make([]projectiveNielsPoint, size), 0
+	optPoints, off := make([]ProjectiveNielsPoint, size), 0
 	for _, points := range [][]*EdwardsPoint{staticPoints, dynamicPoints} {
 		for i, point := range points {
 			optPoints[i+off].SetEdwards(point)
@@ -112,7 +112,7 @@ func edwardsMultiscalarMulPippengerVartimeGeneric(out *EdwardsPoint, staticScala
 		// and add/sub the point to the corresponding bucket.
 		// Note: if we add support for precomputed lookup tables,
 		// we'll be adding/subtracting point premultiplied by `digits[i]` to buckets[0].
-		var tmp completedPoint
+		var tmp CompletedPoint
 		for i := 0; i < size; i++ {
 			digit := int16(optScalars[i][idx])
 			if digit > 0 {

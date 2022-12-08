@@ -33,33 +33,33 @@ package curve
 
 import "github.com/oasisprotocol/curve25519-voi/internal/field"
 
-type projectivePoint struct {
+type ProjectivePoint struct {
 	X field.Element
 	Y field.Element
 	Z field.Element
 }
 
-type completedPoint struct {
+type CompletedPoint struct {
 	X field.Element
 	Y field.Element
 	Z field.Element
 	T field.Element
 }
 
-type affineNielsPoint struct {
+type AffineNielsPoint struct {
 	y_plus_x  field.Element
 	y_minus_x field.Element
 	xy2d      field.Element
 }
 
-type projectiveNielsPoint struct {
+type ProjectiveNielsPoint struct {
 	Y_plus_X  field.Element
 	Y_minus_X field.Element
 	Z         field.Element
 	T2d       field.Element
 }
 
-func (p *affineNielsPoint) SetRaw(raw *[96]uint8) *affineNielsPoint {
+func (p *AffineNielsPoint) SetRaw(raw *[96]uint8) *AffineNielsPoint {
 	_, _ = p.y_plus_x.SetBytes(raw[0:32])
 	_, _ = p.y_minus_x.SetBytes(raw[32:64])
 	_, _ = p.xy2d.SetBytes(raw[64:96])
@@ -69,21 +69,21 @@ func (p *affineNielsPoint) SetRaw(raw *[96]uint8) *affineNielsPoint {
 // Note: dalek has the identity point as the defaut ctors for
 // ProjectiveNielsPoint/AffineNielsPoint.
 
-func (p *projectivePoint) Identity() *projectivePoint {
+func (p *ProjectivePoint) Identity() *ProjectivePoint {
 	p.X.Zero()
 	p.Y.One()
 	p.Z.One()
 	return p
 }
 
-func (p *affineNielsPoint) Identity() *affineNielsPoint {
+func (p *AffineNielsPoint) Identity() *AffineNielsPoint {
 	p.y_plus_x.One()
 	p.y_minus_x.One()
 	p.xy2d.Zero()
 	return p
 }
 
-func (p *projectiveNielsPoint) Identity() *projectiveNielsPoint {
+func (p *ProjectiveNielsPoint) Identity() *ProjectiveNielsPoint {
 	p.Y_plus_X.One()
 	p.Y_minus_X.One()
 	p.Z.One()
@@ -91,82 +91,82 @@ func (p *projectiveNielsPoint) Identity() *projectiveNielsPoint {
 	return p
 }
 
-func (p *projectiveNielsPoint) ConditionalSelect(a, b *projectiveNielsPoint, choice int) {
+func (p *ProjectiveNielsPoint) ConditionalSelect(a, b *ProjectiveNielsPoint, choice int) {
 	p.Y_plus_X.ConditionalSelect(&a.Y_plus_X, &b.Y_plus_X, choice)
 	p.Y_minus_X.ConditionalSelect(&a.Y_minus_X, &b.Y_minus_X, choice)
 	p.Z.ConditionalSelect(&a.Z, &b.Z, choice)
 	p.T2d.ConditionalSelect(&a.T2d, &b.T2d, choice)
 }
 
-func (p *projectiveNielsPoint) ConditionalAssign(other *projectiveNielsPoint, choice int) {
+func (p *ProjectiveNielsPoint) ConditionalAssign(other *ProjectiveNielsPoint, choice int) {
 	p.Y_plus_X.ConditionalAssign(&other.Y_plus_X, choice)
 	p.Y_minus_X.ConditionalAssign(&other.Y_minus_X, choice)
 	p.Z.ConditionalAssign(&other.Z, choice)
 	p.T2d.ConditionalAssign(&other.T2d, choice)
 }
 
-func (p *affineNielsPoint) ConditionalSelect(a, b *affineNielsPoint, choice int) {
+func (p *AffineNielsPoint) ConditionalSelect(a, b *AffineNielsPoint, choice int) {
 	p.y_plus_x.ConditionalSelect(&a.y_plus_x, &b.y_plus_x, choice)
 	p.y_minus_x.ConditionalSelect(&a.y_minus_x, &b.y_minus_x, choice)
 	p.xy2d.ConditionalSelect(&a.xy2d, &b.xy2d, choice)
 }
 
-func (p *affineNielsPoint) ConditionalAssign(other *affineNielsPoint, choice int) {
+func (p *AffineNielsPoint) ConditionalAssign(other *AffineNielsPoint, choice int) {
 	p.y_plus_x.ConditionalAssign(&other.y_plus_x, choice)
 	p.y_minus_x.ConditionalAssign(&other.y_minus_x, choice)
 	p.xy2d.ConditionalAssign(&other.xy2d, choice)
 }
 
-func (p *EdwardsPoint) setProjective(pp *projectivePoint) *EdwardsPoint {
-	p.inner.X.Mul(&pp.X, &pp.Z)
-	p.inner.Y.Mul(&pp.Y, &pp.Z)
-	p.inner.Z.Square(&pp.Z)
-	p.inner.T.Mul(&pp.X, &pp.Y)
+func (p *EdwardsPoint) setProjective(pp *ProjectivePoint) *EdwardsPoint {
+	p.Inner.X.Mul(&pp.X, &pp.Z)
+	p.Inner.Y.Mul(&pp.Y, &pp.Z)
+	p.Inner.Z.Square(&pp.Z)
+	p.Inner.T.Mul(&pp.X, &pp.Y)
 	return p
 }
 
-func (p *EdwardsPoint) setAffineNiels(ap *affineNielsPoint) *EdwardsPoint {
+func (p *EdwardsPoint) setAffineNiels(ap *AffineNielsPoint) *EdwardsPoint {
 	p.Identity()
 
-	var sum completedPoint
+	var sum CompletedPoint
 	return p.setCompleted(sum.AddEdwardsAffineNiels(p, ap))
 }
 
-func (p *EdwardsPoint) setCompleted(cp *completedPoint) *EdwardsPoint {
-	p.inner.X.Mul(&cp.X, &cp.T)
-	p.inner.Y.Mul(&cp.Y, &cp.Z)
-	p.inner.Z.Mul(&cp.Z, &cp.T)
-	p.inner.T.Mul(&cp.X, &cp.Y)
+func (p *EdwardsPoint) setCompleted(cp *CompletedPoint) *EdwardsPoint {
+	p.Inner.X.Mul(&cp.X, &cp.T)
+	p.Inner.Y.Mul(&cp.Y, &cp.Z)
+	p.Inner.Z.Mul(&cp.Z, &cp.T)
+	p.Inner.T.Mul(&cp.X, &cp.Y)
 	return p
 }
 
-func (p *projectivePoint) SetCompleted(cp *completedPoint) *projectivePoint {
+func (p *ProjectivePoint) SetCompleted(cp *CompletedPoint) *ProjectivePoint {
 	p.X.Mul(&cp.X, &cp.T)
 	p.Y.Mul(&cp.Y, &cp.Z)
 	p.Z.Mul(&cp.Z, &cp.T)
 	return p
 }
 
-func (p *projectivePoint) SetEdwards(ep *EdwardsPoint) *projectivePoint {
-	p.X.Set(&ep.inner.X)
-	p.Y.Set(&ep.inner.Y)
-	p.Z.Set(&ep.inner.Z)
+func (p *ProjectivePoint) SetEdwards(ep *EdwardsPoint) *ProjectivePoint {
+	p.X.Set(&ep.Inner.X)
+	p.Y.Set(&ep.Inner.Y)
+	p.Z.Set(&ep.Inner.Z)
 	return p
 }
 
-func (p *projectiveNielsPoint) SetEdwards(ep *EdwardsPoint) *projectiveNielsPoint {
-	p.Y_plus_X.Add(&ep.inner.Y, &ep.inner.X)
-	p.Y_minus_X.Sub(&ep.inner.Y, &ep.inner.X)
-	p.Z.Set(&ep.inner.Z)
-	p.T2d.Mul(&ep.inner.T, &constEDWARDS_D2)
+func (p *ProjectiveNielsPoint) SetEdwards(ep *EdwardsPoint) *ProjectiveNielsPoint {
+	p.Y_plus_X.Add(&ep.Inner.Y, &ep.Inner.X)
+	p.Y_minus_X.Sub(&ep.Inner.Y, &ep.Inner.X)
+	p.Z.Set(&ep.Inner.Z)
+	p.T2d.Mul(&ep.Inner.T, &constEDWARDS_D2)
 	return p
 }
 
-func (p *affineNielsPoint) SetEdwards(ep *EdwardsPoint) *affineNielsPoint {
+func (p *AffineNielsPoint) SetEdwards(ep *EdwardsPoint) *AffineNielsPoint {
 	var recip, x, y, xy field.Element
-	recip.Invert(&ep.inner.Z)
-	x.Mul(&ep.inner.X, &recip)
-	y.Mul(&ep.inner.Y, &recip)
+	recip.Invert(&ep.Inner.Z)
+	x.Mul(&ep.Inner.X, &recip)
+	y.Mul(&ep.Inner.Y, &recip)
 	xy.Mul(&x, &y)
 	p.y_plus_x.Add(&y, &x)
 	p.y_minus_x.Sub(&y, &x)
@@ -174,7 +174,7 @@ func (p *affineNielsPoint) SetEdwards(ep *EdwardsPoint) *affineNielsPoint {
 	return p
 }
 
-func (p *completedPoint) Double(pp *projectivePoint) *completedPoint {
+func (p *CompletedPoint) Double(pp *ProjectivePoint) *CompletedPoint {
 	var XX, YY, ZZ2, X_plus_Y_sq field.Element
 	XX.Square(&pp.X)
 	YY.Square(&pp.Y)
@@ -190,14 +190,14 @@ func (p *completedPoint) Double(pp *projectivePoint) *completedPoint {
 	return p
 }
 
-func (p *completedPoint) AddEdwardsProjectiveNiels(a *EdwardsPoint, b *projectiveNielsPoint) *completedPoint {
+func (p *CompletedPoint) AddEdwardsProjectiveNiels(a *EdwardsPoint, b *ProjectiveNielsPoint) *CompletedPoint {
 	var PP, MM, TT2d, ZZ, ZZ2 field.Element
-	PP.Add(&a.inner.Y, &a.inner.X) // a.Y + a.X
+	PP.Add(&a.Inner.Y, &a.Inner.X) // a.Y + a.X
 	PP.Mul(&PP, &b.Y_plus_X)       // (a.Y + a.X) * b.Y_plus_X
-	MM.Sub(&a.inner.Y, &a.inner.X) // a.Y - a.X
+	MM.Sub(&a.Inner.Y, &a.Inner.X) // a.Y - a.X
 	MM.Mul(&MM, &b.Y_minus_X)      // (a.Y - a.X) * b.Y_minus_X
-	TT2d.Mul(&a.inner.T, &b.T2d)
-	ZZ.Mul(&a.inner.Z, &b.Z)
+	TT2d.Mul(&a.Inner.T, &b.T2d)
+	ZZ.Mul(&a.Inner.Z, &b.Z)
 	ZZ2.Add(&ZZ, &ZZ)
 
 	p.X.Sub(&PP, &MM)
@@ -208,14 +208,14 @@ func (p *completedPoint) AddEdwardsProjectiveNiels(a *EdwardsPoint, b *projectiv
 	return p
 }
 
-func (p *completedPoint) SubEdwardsProjectiveNiels(a *EdwardsPoint, b *projectiveNielsPoint) *completedPoint {
+func (p *CompletedPoint) SubEdwardsProjectiveNiels(a *EdwardsPoint, b *ProjectiveNielsPoint) *CompletedPoint {
 	var PM, MP, TT2d, ZZ, ZZ2 field.Element
-	PM.Add(&a.inner.Y, &a.inner.X) // a.Y + a.X
+	PM.Add(&a.Inner.Y, &a.Inner.X) // a.Y + a.X
 	PM.Mul(&PM, &b.Y_minus_X)      // (a.Y + a.X) * b.Y_minus_X
-	MP.Sub(&a.inner.Y, &a.inner.X) // a.Y - a.X
+	MP.Sub(&a.Inner.Y, &a.Inner.X) // a.Y - a.X
 	MP.Mul(&MP, &b.Y_plus_X)       // (a.Y - a.X) * b.Y_plus_X
-	TT2d.Mul(&a.inner.T, &b.T2d)
-	ZZ.Mul(&a.inner.Z, &b.Z)
+	TT2d.Mul(&a.Inner.T, &b.T2d)
+	ZZ.Mul(&a.Inner.Z, &b.Z)
 	ZZ2.Add(&ZZ, &ZZ)
 
 	p.X.Sub(&PM, &MP)
@@ -225,14 +225,14 @@ func (p *completedPoint) SubEdwardsProjectiveNiels(a *EdwardsPoint, b *projectiv
 	return p
 }
 
-func (p *completedPoint) AddEdwardsAffineNiels(a *EdwardsPoint, b *affineNielsPoint) *completedPoint {
+func (p *CompletedPoint) AddEdwardsAffineNiels(a *EdwardsPoint, b *AffineNielsPoint) *CompletedPoint {
 	var PP, MM, Txy2d, Z2 field.Element
-	PP.Add(&a.inner.Y, &a.inner.X) // a.Y + a.X
+	PP.Add(&a.Inner.Y, &a.Inner.X) // a.Y + a.X
 	PP.Mul(&PP, &b.y_plus_x)       // (a.Y + a.X) * b.y_plus_x
-	MM.Sub(&a.inner.Y, &a.inner.X) // a.Y - a.X
+	MM.Sub(&a.Inner.Y, &a.Inner.X) // a.Y - a.X
 	MM.Mul(&MM, &b.y_minus_x)      // (a.Y - a.X) * b.y_minus_x
-	Txy2d.Mul(&a.inner.T, &b.xy2d)
-	Z2.Add(&a.inner.Z, &a.inner.Z)
+	Txy2d.Mul(&a.Inner.T, &b.xy2d)
+	Z2.Add(&a.Inner.Z, &a.Inner.Z)
 
 	p.X.Sub(&PP, &MM)
 	p.Y.Add(&PP, &MM)
@@ -242,19 +242,19 @@ func (p *completedPoint) AddEdwardsAffineNiels(a *EdwardsPoint, b *affineNielsPo
 	return p
 }
 
-func (p *completedPoint) AddCompletedAffineNiels(a *completedPoint, b *affineNielsPoint) *completedPoint {
+func (p *CompletedPoint) AddCompletedAffineNiels(a *CompletedPoint, b *AffineNielsPoint) *CompletedPoint {
 	var aTmp EdwardsPoint
 	return p.AddEdwardsAffineNiels(aTmp.setCompleted(a), b)
 }
 
-func (p *completedPoint) SubEdwardsAffineNiels(a *EdwardsPoint, b *affineNielsPoint) *completedPoint {
+func (p *CompletedPoint) SubEdwardsAffineNiels(a *EdwardsPoint, b *AffineNielsPoint) *CompletedPoint {
 	var Y_plus_X, Y_minus_X, PM, MP, Txy2d, Z2 field.Element
-	Y_plus_X.Add(&a.inner.Y, &a.inner.X)
-	Y_minus_X.Sub(&a.inner.Y, &a.inner.X)
+	Y_plus_X.Add(&a.Inner.Y, &a.Inner.X)
+	Y_minus_X.Sub(&a.Inner.Y, &a.Inner.X)
 	PM.Mul(&Y_plus_X, &b.y_minus_x)
 	MP.Mul(&Y_minus_X, &b.y_plus_x)
-	Txy2d.Mul(&a.inner.T, &b.xy2d)
-	Z2.Add(&a.inner.Z, &a.inner.Z)
+	Txy2d.Mul(&a.Inner.T, &b.xy2d)
+	Z2.Add(&a.Inner.Z, &a.Inner.Z)
 
 	p.X.Sub(&PM, &MP)
 	p.Y.Add(&PM, &MP)
@@ -264,17 +264,17 @@ func (p *completedPoint) SubEdwardsAffineNiels(a *EdwardsPoint, b *affineNielsPo
 	return p
 }
 
-func (p *completedPoint) SubCompletedAffineNiels(a *completedPoint, b *affineNielsPoint) *completedPoint {
+func (p *CompletedPoint) SubCompletedAffineNiels(a *CompletedPoint, b *AffineNielsPoint) *CompletedPoint {
 	var aTmp EdwardsPoint
 	return p.SubEdwardsAffineNiels(aTmp.setCompleted(a), b)
 }
 
-func (p *projectiveNielsPoint) ConditionalNegate(choice int) {
+func (p *ProjectiveNielsPoint) ConditionalNegate(choice int) {
 	p.Y_plus_X.ConditionalSwap(&p.Y_minus_X, choice)
 	p.T2d.ConditionalNegate(choice)
 }
 
-func (p *affineNielsPoint) ConditionalNegate(choice int) {
+func (p *AffineNielsPoint) ConditionalNegate(choice int) {
 	p.y_plus_x.ConditionalSwap(&p.y_minus_x, choice)
 	p.xy2d.ConditionalNegate(choice)
 }

@@ -114,7 +114,7 @@ type extendedPoint struct {
 }
 
 func (p *EdwardsPoint) setExtended(ep *extendedPoint) *EdwardsPoint {
-	ep.inner.Split(&p.inner.X, &p.inner.Y, &p.inner.Z, &p.inner.T)
+	ep.inner.Split(&p.Inner.X, &p.Inner.Y, &p.Inner.Z, &p.Inner.T)
 	return p
 }
 
@@ -125,7 +125,7 @@ func (p *EdwardsPoint) setCached(cp *cachedPoint) *EdwardsPoint {
 }
 
 func (p *extendedPoint) SetEdwards(ep *EdwardsPoint) *extendedPoint {
-	p.inner = newFieldElement2625x4(&ep.inner.X, &ep.inner.Y, &ep.inner.Z, &ep.inner.T)
+	p.inner = newFieldElement2625x4(&ep.Inner.X, &ep.Inner.Y, &ep.Inner.Z, &ep.Inner.T)
 	return p
 }
 

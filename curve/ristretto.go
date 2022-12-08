@@ -80,10 +80,10 @@ func (p *CompressedRistretto) SetBytes(in []byte) (*CompressedRistretto, error) 
 // SetRistrettoPoint compresses a Ristretto point into a CompressedRistretto.
 func (p *CompressedRistretto) SetRistrettoPoint(ristrettoPoint *RistrettoPoint) *CompressedRistretto {
 	ip := &ristrettoPoint.inner // Make this look less ugly.
-	X := ip.inner.X
-	Y := ip.inner.Y
-	Z := ip.inner.Z
-	T := ip.inner.T
+	X := ip.Inner.X
+	Y := ip.Inner.Y
+	Z := ip.Inner.Z
+	T := ip.Inner.T
 
 	var u1, u2, tmp field.Element
 	u1.Add(&Z, &Y)
@@ -326,10 +326,10 @@ func (p *RistrettoPoint) ConditionalSelect(a, b *RistrettoPoint, choice int) {
 func (p *RistrettoPoint) Equal(other *RistrettoPoint) int {
 	pI, oI := &p.inner, &other.inner // Make this look less ugly.
 	var X1Y2, Y1X2, X1X2, Y1Y2 field.Element
-	X1Y2.Mul(&pI.inner.X, &oI.inner.Y)
-	Y1X2.Mul(&pI.inner.Y, &oI.inner.X)
-	X1X2.Mul(&pI.inner.X, &oI.inner.X)
-	Y1Y2.Mul(&pI.inner.Y, &oI.inner.Y)
+	X1Y2.Mul(&pI.Inner.X, &oI.Inner.Y)
+	Y1X2.Mul(&pI.Inner.Y, &oI.Inner.X)
+	X1X2.Mul(&pI.Inner.X, &oI.Inner.X)
+	Y1Y2.Mul(&pI.Inner.Y, &oI.Inner.Y)
 
 	return X1Y2.Equal(&Y1X2) | X1X2.Equal(&Y1Y2)
 }
@@ -459,7 +459,7 @@ func (p *RistrettoPoint) elligatorRistrettoFlavor(r_0 *field.Element) {
 	var s_sq field.Element
 	s_sq.Square(&s)
 
-	var cp completedPoint
+	var cp CompletedPoint
 	cp.X.Add(&s, &s)
 	cp.X.Mul(&cp.X, &D)
 	cp.Z.Mul(&N_t, &constSQRT_AD_MINUS_ONE)

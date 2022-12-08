@@ -168,8 +168,8 @@ func testEdwardsDecompressionCompression(t *testing.T) {
 	}
 
 	// Check that decompression actually gives the correct X coordinate.
-	if baseX.Equal(&bp.inner.X) != 1 {
-		t.Fatalf("baseX != bp.X (Got: %v)", bp.inner.X)
+	if baseX.Equal(&bp.Inner.X) != 1 {
+		t.Fatalf("baseX != bp.X (Got: %v)", bp.Inner.X)
 	}
 	var recompressed CompressedEdwardsY
 	recompressed.SetEdwardsPoint(&bp)
@@ -191,19 +191,19 @@ func testEdwardsDecompressionSignHandling(t *testing.T) {
 	// Test projective coordinates exactly since we know they should
 	// only differ by a flipped sign.
 	var negX, negT field.Element
-	negX.Neg(&ED25519_BASEPOINT_POINT.inner.X)
-	negT.Neg(&ED25519_BASEPOINT_POINT.inner.T)
-	if minusBasepoint.inner.X.Equal(&negX) != 1 {
-		t.Fatalf("minusBasepoint.X != -ED25519_BASEPOINT_POINT.X (Got: %v)", minusBasepoint.inner.X)
+	negX.Neg(&ED25519_BASEPOINT_POINT.Inner.X)
+	negT.Neg(&ED25519_BASEPOINT_POINT.Inner.T)
+	if minusBasepoint.Inner.X.Equal(&negX) != 1 {
+		t.Fatalf("minusBasepoint.X != -ED25519_BASEPOINT_POINT.X (Got: %v)", minusBasepoint.Inner.X)
 	}
-	if minusBasepoint.inner.Y.Equal(&ED25519_BASEPOINT_POINT.inner.Y) != 1 {
-		t.Fatalf("minusBasepoint.Y != -ED25519_BASEPOINT_POINT.Y (Got: %v)", minusBasepoint.inner.Y)
+	if minusBasepoint.Inner.Y.Equal(&ED25519_BASEPOINT_POINT.Inner.Y) != 1 {
+		t.Fatalf("minusBasepoint.Y != -ED25519_BASEPOINT_POINT.Y (Got: %v)", minusBasepoint.Inner.Y)
 	}
-	if minusBasepoint.inner.Z.Equal(&ED25519_BASEPOINT_POINT.inner.Z) != 1 {
-		t.Fatalf("minusBasepoint.Z != -ED25519_BASEPOINT_POINT.Z (Got: %v)", minusBasepoint.inner.Z)
+	if minusBasepoint.Inner.Z.Equal(&ED25519_BASEPOINT_POINT.Inner.Z) != 1 {
+		t.Fatalf("minusBasepoint.Z != -ED25519_BASEPOINT_POINT.Z (Got: %v)", minusBasepoint.Inner.Z)
 	}
-	if minusBasepoint.inner.T.Equal(&negT) != 1 {
-		t.Fatalf("minusBasepoint.T != -ED25519_BASEPOINT_COMPRESSED.T (Got: %v)", minusBasepoint.inner.T)
+	if minusBasepoint.Inner.T.Equal(&negT) != 1 {
+		t.Fatalf("minusBasepoint.T != -ED25519_BASEPOINT_COMPRESSED.T (Got: %v)", minusBasepoint.Inner.T)
 	}
 }
 
@@ -218,8 +218,8 @@ func testEdwardsAdd(t *testing.T) {
 
 func testEdwardsAddProjectiveNiels(t *testing.T) {
 	var (
-		bpPNiels     projectiveNielsPoint
-		sumCompleted completedPoint
+		bpPNiels     ProjectiveNielsPoint
+		sumCompleted CompletedPoint
 		sum          EdwardsPoint
 	)
 	bp := ED25519_BASEPOINT_POINT
@@ -231,8 +231,8 @@ func testEdwardsAddProjectiveNiels(t *testing.T) {
 
 func testEdwardsAddAffineNiels(t *testing.T) {
 	var (
-		bpANiels     affineNielsPoint
-		sumCompleted completedPoint
+		bpANiels     AffineNielsPoint
+		sumCompleted CompletedPoint
 		sum          EdwardsPoint
 	)
 	bp := ED25519_BASEPOINT_POINT
@@ -247,8 +247,8 @@ func testEdwardsEqualsHandlesScaling(t *testing.T) {
 	id1.Identity()
 
 	var id2 EdwardsPoint
-	id2.inner.Y.Set(&field.Two)
-	id2.inner.Z.Set(&field.Two)
+	id2.Inner.Y.Set(&field.Two)
+	id2.Inner.Z.Set(&field.Two)
 	if id1.Equal(&id2) != 1 {
 		t.Fatalf("id1 != id2")
 	}
@@ -414,7 +414,7 @@ func testEdwardsBasepointPointDoubleVsConstant(t *testing.T) {
 
 func testEdwardsBasepointPointProjectiveExtendedRoundTrip(t *testing.T) {
 	var (
-		pProjective projectivePoint
+		pProjective ProjectivePoint
 		pp          EdwardsPoint
 	)
 	pProjective.SetEdwards(ED25519_BASEPOINT_POINT)
@@ -560,7 +560,7 @@ func testEdwardsMultiscalarMulVartime(t *testing.T) {
 }
 
 func testAffineNielsConditionalAssign(t *testing.T) {
-	var id, p1, bp affineNielsPoint
+	var id, p1, bp AffineNielsPoint
 	id.Identity()
 	p1.Identity()
 	bp.SetEdwards(ED25519_BASEPOINT_POINT)
@@ -578,8 +578,8 @@ func testAffineNielsConditionalAssign(t *testing.T) {
 func testAffineNielsConversionClearsDenominators(t *testing.T) {
 	var (
 		aB, also_aB   EdwardsPoint
-		aBAffineNiels affineNielsPoint
-		sum           completedPoint
+		aBAffineNiels AffineNielsPoint
+		sum           CompletedPoint
 	)
 	aB.MulBasepoint(ED25519_BASEPOINT_TABLE, edwardsPointTestScalars["A"])
 	also_aB.setCompleted(sum.AddEdwardsAffineNiels(edwardsPointTestIdentity, aBAffineNiels.SetEdwards(&aB)))
@@ -614,19 +614,19 @@ func (p *EdwardsPoint) testEqualCompressedY(s string) bool {
 }
 
 func (p *EdwardsPoint) debugIsValid() bool {
-	var pProjective projectivePoint
+	var pProjective ProjectivePoint
 	pProjective.SetEdwards(p)
 	pointOnCurve := pProjective.debugIsValid()
 
 	var XY, ZT field.Element
-	XY.Mul(&p.inner.X, &p.inner.Y)
-	ZT.Mul(&p.inner.Z, &p.inner.T)
+	XY.Mul(&p.Inner.X, &p.Inner.Y)
+	ZT.Mul(&p.Inner.Z, &p.Inner.T)
 	onSegreImage := XY.Equal(&ZT) == 1
 
 	return pointOnCurve && onSegreImage
 }
 
-func (p *projectivePoint) debugIsValid() bool {
+func (p *ProjectivePoint) debugIsValid() bool {
 	// Curve equation is    -x^2 + y^2 = 1 + d*x^2*y^2,
 	// homogenized as (-X^2 + Y^2)*Z^2 = Z^4 + d*X^2*Y^2
 	var XX, YY, ZZ, ZZZZ field.Element
@@ -645,7 +645,7 @@ func (p *projectivePoint) debugIsValid() bool {
 	return lhs.Equal(&rhs) == 1
 }
 
-func (p *affineNielsPoint) testEqual(other *affineNielsPoint) bool {
+func (p *AffineNielsPoint) testEqual(other *AffineNielsPoint) bool {
 	res := p.y_plus_x.Equal(&other.y_plus_x) & p.y_minus_x.Equal(&other.y_minus_x) & p.xy2d.Equal(&other.xy2d)
 
 	return res == 1
