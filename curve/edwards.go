@@ -316,7 +316,7 @@ func (p *EdwardsPoint) Add(a, b *EdwardsPoint) *EdwardsPoint {
 		bPNiels ProjectiveNielsPoint
 		sum     CompletedPoint
 	)
-	return p.setCompleted(sum.AddEdwardsProjectiveNiels(a, bPNiels.SetEdwards(b)))
+	return p.SetCompleted(sum.AddEdwardsProjectiveNiels(a, bPNiels.SetEdwards(b)))
 }
 
 // Sub sets `p = a - b`, and returns p.
@@ -325,7 +325,7 @@ func (p *EdwardsPoint) Sub(a, b *EdwardsPoint) *EdwardsPoint {
 		bPNiels ProjectiveNielsPoint
 		diff    CompletedPoint
 	)
-	return p.setCompleted(diff.SubEdwardsProjectiveNiels(a, bPNiels.SetEdwards(b)))
+	return p.SetCompleted(diff.SubEdwardsProjectiveNiels(a, bPNiels.SetEdwards(b)))
 }
 
 // Sum sets p to the sum of values, and returns p.
@@ -432,7 +432,7 @@ func (p *EdwardsPoint) double(t *EdwardsPoint) *EdwardsPoint {
 		pProjective ProjectivePoint
 		sum         CompletedPoint
 	)
-	return p.setCompleted(sum.Double(pProjective.SetEdwards(t)))
+	return p.SetCompleted(sum.Double(pProjective.SetEdwards(t)))
 }
 
 // mulByPow2 sets `p = [2^k]t` by successive doublings, and returns p.  Requires `k > 0`.
@@ -450,7 +450,7 @@ func (p *EdwardsPoint) mulByPow2(t *EdwardsPoint, k uint) *EdwardsPoint {
 		s.SetCompleted(r.Double(&s))
 	}
 	// Unroll last iteration so we can directly convert back to an EdwardsPoint.
-	return p.setCompleted(r.Double(&s))
+	return p.SetCompleted(r.Double(&s))
 }
 
 // EdwardsBasepointTable defines a precomputed table of multiples of a

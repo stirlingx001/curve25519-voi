@@ -78,12 +78,12 @@ func edwardsMulGeneric(out, point *EdwardsPoint, scalar *scalar.Scalar) *Edwards
 		tmp1.Double(&tmp2)       // tmp1 =  8*(prev) in P1xP1 coords
 		tmp2.SetCompleted(&tmp1) // tmp2 =  8*(prev) in P2 coords
 		tmp1.Double(&tmp2)       // tmp1 = 16*(prev) in P1xP1 coords
-		tmp3.setCompleted(&tmp1) // tmp3 = 16*(prev) in P3 coords
+		tmp3.SetCompleted(&tmp1) // tmp3 = 16*(prev) in P3 coords
 		tmp = lookupTable.Lookup(scalarDigits[i])
 		tmp1.AddEdwardsProjectiveNiels(&tmp3, &tmp)
 		// Now tmp1 = s_i*P + 16*(prev) in P1xP1 coords
 	}
-	return out.setCompleted(&tmp1)
+	return out.SetCompleted(&tmp1)
 }
 
 func edwardsMulVector(out, point *EdwardsPoint, scalar *scalar.Scalar) *EdwardsPoint {

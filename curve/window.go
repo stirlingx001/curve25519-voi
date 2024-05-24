@@ -73,7 +73,7 @@ func newProjectiveNielsPointLookupTable(ep *EdwardsPoint) projectiveNielsPointLo
 			tmp  CompletedPoint
 			tmp2 EdwardsPoint
 		)
-		points[j+1].SetEdwards(tmp2.setCompleted(tmp.AddEdwardsProjectiveNiels(ep, &points[j])))
+		points[j+1].SetEdwards(tmp2.SetCompleted(tmp.AddEdwardsProjectiveNiels(ep, &points[j])))
 	}
 
 	return projectiveNielsPointLookupTable(points)
@@ -120,7 +120,7 @@ func newAffineNielsPointLookupTable(ep *EdwardsPoint) affineNielsPointLookupTabl
 			tmp  CompletedPoint
 			tmp2 EdwardsPoint
 		)
-		points[j+1].SetEdwards(tmp2.setCompleted(tmp.AddEdwardsAffineNiels(ep, &points[j])))
+		points[j+1].SetEdwards(tmp2.SetCompleted(tmp.AddEdwardsAffineNiels(ep, &points[j])))
 	}
 
 	return affineNielsPointLookupTable(points)
@@ -198,7 +198,7 @@ func newProjectiveNielsPointNafLookupTable(ep *EdwardsPoint) projectiveNielsPoin
 			tmp  CompletedPoint
 			tmp2 EdwardsPoint
 		)
-		Ai[i+1].SetEdwards(tmp2.setCompleted(tmp.AddEdwardsProjectiveNiels(&A2, &Ai[i])))
+		Ai[i+1].SetEdwards(tmp2.SetCompleted(tmp.AddEdwardsProjectiveNiels(&A2, &Ai[i])))
 	}
 
 	return projectiveNielsPointNafLookupTable(Ai)
@@ -266,7 +266,7 @@ func newAffineNielsPointNafLookupTable(ep *EdwardsPoint) affineNielsPointNafLook
 			tmp  CompletedPoint
 			tmp2 EdwardsPoint
 		)
-		Ai[i+1].SetEdwards(tmp2.setCompleted(tmp.AddEdwardsAffineNiels(&A2, &Ai[i])))
+		Ai[i+1].SetEdwards(tmp2.SetCompleted(tmp.AddEdwardsAffineNiels(&A2, &Ai[i])))
 	}
 
 	return affineNielsPointNafLookupTable(Ai)

@@ -117,10 +117,10 @@ func edwardsMultiscalarMulPippengerVartimeGeneric(out *EdwardsPoint, staticScala
 			digit := int16(optScalars[i][idx])
 			if digit > 0 {
 				b := uint(digit - 1)
-				buckets[b].setCompleted(tmp.AddEdwardsProjectiveNiels(&buckets[b], &optPoints[i]))
+				buckets[b].SetCompleted(tmp.AddEdwardsProjectiveNiels(&buckets[b], &optPoints[i]))
 			} else if digit < 0 {
 				b := uint(-digit - 1)
-				buckets[b].setCompleted(tmp.SubEdwardsProjectiveNiels(&buckets[b], &optPoints[i]))
+				buckets[b].SetCompleted(tmp.SubEdwardsProjectiveNiels(&buckets[b], &optPoints[i]))
 			}
 		}
 

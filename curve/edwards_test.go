@@ -223,7 +223,7 @@ func testEdwardsAddProjectiveNiels(t *testing.T) {
 		sum          EdwardsPoint
 	)
 	bp := ED25519_BASEPOINT_POINT
-	sum.setCompleted(sumCompleted.AddEdwardsProjectiveNiels(bp, bpPNiels.SetEdwards(bp)))
+	sum.SetCompleted(sumCompleted.AddEdwardsProjectiveNiels(bp, bpPNiels.SetEdwards(bp)))
 	if !sum.testEqualCompressedY("BASE2") {
 		t.Fatalf("bp + toProjectiveNiels(bp) != BASE2 (Got: %v)", sum)
 	}
@@ -236,7 +236,7 @@ func testEdwardsAddAffineNiels(t *testing.T) {
 		sum          EdwardsPoint
 	)
 	bp := ED25519_BASEPOINT_POINT
-	sum.setCompleted(sumCompleted.AddEdwardsAffineNiels(bp, bpANiels.SetEdwards(bp)))
+	sum.SetCompleted(sumCompleted.AddEdwardsAffineNiels(bp, bpANiels.SetEdwards(bp)))
 	if !sum.testEqualCompressedY("BASE2") {
 		t.Fatalf("bp + toAffineNiels(bp) != BASE2 (Got: %v)", sum)
 	}
@@ -582,7 +582,7 @@ func testAffineNielsConversionClearsDenominators(t *testing.T) {
 		sum           CompletedPoint
 	)
 	aB.MulBasepoint(ED25519_BASEPOINT_TABLE, edwardsPointTestScalars["A"])
-	also_aB.setCompleted(sum.AddEdwardsAffineNiels(edwardsPointTestIdentity, aBAffineNiels.SetEdwards(&aB)))
+	also_aB.SetCompleted(sum.AddEdwardsAffineNiels(edwardsPointTestIdentity, aBAffineNiels.SetEdwards(&aB)))
 
 	if aB.Equal(&also_aB) != 1 {
 		t.Fatalf("aB != also_aB (Got %v %v)", aB, also_aB)

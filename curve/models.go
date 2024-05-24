@@ -129,10 +129,10 @@ func (p *EdwardsPoint) setAffineNiels(ap *AffineNielsPoint) *EdwardsPoint {
 	p.Identity()
 
 	var sum CompletedPoint
-	return p.setCompleted(sum.AddEdwardsAffineNiels(p, ap))
+	return p.SetCompleted(sum.AddEdwardsAffineNiels(p, ap))
 }
 
-func (p *EdwardsPoint) setCompleted(cp *CompletedPoint) *EdwardsPoint {
+func (p *EdwardsPoint) SetCompleted(cp *CompletedPoint) *EdwardsPoint {
 	p.Inner.X.Mul(&cp.X, &cp.T)
 	p.Inner.Y.Mul(&cp.Y, &cp.Z)
 	p.Inner.Z.Mul(&cp.Z, &cp.T)
@@ -244,7 +244,7 @@ func (p *CompletedPoint) AddEdwardsAffineNiels(a *EdwardsPoint, b *AffineNielsPo
 
 func (p *CompletedPoint) AddCompletedAffineNiels(a *CompletedPoint, b *AffineNielsPoint) *CompletedPoint {
 	var aTmp EdwardsPoint
-	return p.AddEdwardsAffineNiels(aTmp.setCompleted(a), b)
+	return p.AddEdwardsAffineNiels(aTmp.SetCompleted(a), b)
 }
 
 func (p *CompletedPoint) SubEdwardsAffineNiels(a *EdwardsPoint, b *AffineNielsPoint) *CompletedPoint {
@@ -266,7 +266,7 @@ func (p *CompletedPoint) SubEdwardsAffineNiels(a *EdwardsPoint, b *AffineNielsPo
 
 func (p *CompletedPoint) SubCompletedAffineNiels(a *CompletedPoint, b *AffineNielsPoint) *CompletedPoint {
 	var aTmp EdwardsPoint
-	return p.SubEdwardsAffineNiels(aTmp.setCompleted(a), b)
+	return p.SubEdwardsAffineNiels(aTmp.SetCompleted(a), b)
 }
 
 func (p *ProjectiveNielsPoint) ConditionalNegate(choice int) {

@@ -467,7 +467,7 @@ func (p *RistrettoPoint) elligatorRistrettoFlavor(r_0 *field.Element) {
 	cp.T.Add(&field.One, &s_sq)
 
 	// The conversion from W_i is exactly the conversion from P1xP1.
-	p.inner.setCompleted(&cp)
+	p.inner.SetCompleted(&cp)
 }
 
 // NewRistrettoPoint constructs a new Ristretto point set to the identity element.

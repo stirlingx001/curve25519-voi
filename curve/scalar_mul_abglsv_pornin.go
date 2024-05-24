@@ -180,15 +180,15 @@ func edwardsMulAbglsvPorninVartimeGenericInner(out *EdwardsPoint, d0IsNeg bool, 
 		// precomputation.
 		if !d0IsNeg {
 			if d_0_naf[i] > 0 {
-				t.AddEdwardsProjectiveNiels(tEp.setCompleted(&t), tableA.Lookup(uint8(d_0_naf[i])))
+				t.AddEdwardsProjectiveNiels(tEp.SetCompleted(&t), tableA.Lookup(uint8(d_0_naf[i])))
 			} else if d_0_naf[i] < 0 {
-				t.SubEdwardsProjectiveNiels(tEp.setCompleted(&t), tableA.Lookup(uint8(-d_0_naf[i])))
+				t.SubEdwardsProjectiveNiels(tEp.SetCompleted(&t), tableA.Lookup(uint8(-d_0_naf[i])))
 			}
 		} else {
 			if d_0_naf[i] > 0 {
-				t.SubEdwardsProjectiveNiels(tEp.setCompleted(&t), tableA.Lookup(uint8(d_0_naf[i])))
+				t.SubEdwardsProjectiveNiels(tEp.SetCompleted(&t), tableA.Lookup(uint8(d_0_naf[i])))
 			} else if d_0_naf[i] < 0 {
-				t.AddEdwardsProjectiveNiels(tEp.setCompleted(&t), tableA.Lookup(uint8(-d_0_naf[i])))
+				t.AddEdwardsProjectiveNiels(tEp.SetCompleted(&t), tableA.Lookup(uint8(-d_0_naf[i])))
 			}
 		}
 
@@ -205,9 +205,9 @@ func edwardsMulAbglsvPorninVartimeGenericInner(out *EdwardsPoint, d0IsNeg bool, 
 		}
 
 		if d_1_naf[i] > 0 {
-			t.AddEdwardsProjectiveNiels(tEp.setCompleted(&t), tableNegC.Lookup(uint8(d_1_naf[i])))
+			t.AddEdwardsProjectiveNiels(tEp.SetCompleted(&t), tableNegC.Lookup(uint8(d_1_naf[i])))
 		} else if d_1_naf[i] < 0 {
-			t.SubEdwardsProjectiveNiels(tEp.setCompleted(&t), tableNegC.Lookup(uint8(-d_1_naf[i])))
+			t.SubEdwardsProjectiveNiels(tEp.SetCompleted(&t), tableNegC.Lookup(uint8(-d_1_naf[i])))
 		}
 
 		r.SetCompleted(&t)

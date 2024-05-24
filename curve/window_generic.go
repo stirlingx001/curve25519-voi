@@ -35,7 +35,7 @@ package curve
 
 import "github.com/oasisprotocol/curve25519-voi/internal/subtle"
 
-func lookupAffineNiels(tbl *affineNielsPointLookupTable, out *affineNielsPoint, xabs uint8) {
+func lookupAffineNiels(tbl *affineNielsPointLookupTable, out *AffineNielsPoint, xabs uint8) {
 	out.Identity()
 	for j := 1; j < 9; j++ {
 		// Copy `points[j-1] == j*P` onto `t` in constant time if `|x| == j`.

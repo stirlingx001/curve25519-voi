@@ -81,14 +81,14 @@ func (tbl *edwardsBasepointTableGeneric) Mul(out *EdwardsPoint, scalar *scalar.S
 	var sum CompletedPoint
 	for i := 1; i < 64; i = i + 2 {
 		aPt := tbl[i/2].Lookup(a[i])
-		out.setCompleted(sum.AddEdwardsAffineNiels(out, &aPt))
+		out.SetCompleted(sum.AddEdwardsAffineNiels(out, &aPt))
 	}
 
 	out.mulByPow2(out, 4)
 
 	for i := 0; i < 64; i = i + 2 {
 		aPt := tbl[i/2].Lookup(a[i])
-		out.setCompleted(sum.AddEdwardsAffineNiels(out, &aPt))
+		out.SetCompleted(sum.AddEdwardsAffineNiels(out, &aPt))
 	}
 
 	return out
